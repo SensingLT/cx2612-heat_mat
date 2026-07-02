@@ -7,7 +7,9 @@
 #include "uart.h"
 #include "crc.h"
 #include "config.h"
-
+#include "ntc.h"
+#include "heat.h"
+#include "sif.h"
 
 // 复位控制代码，必须使用 
 void NRST_PBO_SetZero(void) 
@@ -27,12 +29,24 @@ void NRST_PBO_SetZero(void)
 int main (void) {
 	NRST_PBO_SetZero();
 	Tick_Init();
-	Uart_Init(9600);
+	Uart_Init(115200);
 	Wdg_Init(WDG_COUNTER_PER_SECOND); //timeout=1s 设置看门狗重装载值
 	Adc_Init();
+	Heat_GPIOInit();
+	SIF_Init();
+	Heat_PIDInit(0, 2.5f, 0.10f, 0.5f);   // 通道0
+   // Heat_PIDInit(1, 5.0f, 0.10f, 0.5f);   // 通道1
+	
+   // Heat_SetTargetTemp(0, 450);
+  //  Heat_SetTargetTemp(1, 600);
+	
 	uint8_t revMsg[UART_MAX_REV_LEN];
 	while (1) {
-
+		//SIF_Task();
+//		static uint32_t tempTick = 0;
+//		if(Tick_Passed(&tempTick,50)){
+//			//Heat_ControlTask();
+//		}
 		Wdg_Feed();
 	}
 }

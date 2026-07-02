@@ -70,7 +70,7 @@
             <nStopU2X>0</nStopU2X>
           </BeforeCompile>
           <BeforeMake>
-            <RunUserProg1>1</RunUserProg1>
+            <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
             <UserProg1Name>..\public\beforeBuild.bat .\Listings</UserProg1Name>
             <UserProg2Name></UserProg2Name>
@@ -80,7 +80,7 @@
             <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
-            <RunUserProg1>1</RunUserProg1>
+            <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
             <UserProg1Name>..\public\afterBuild.bat .\Listings !L</UserProg1Name>
             <UserProg2Name></UserProg2Name>
@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>2</Optim>
             <oTime>1</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,USE_FULL_ASSERT</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\PT32Y003x_FWLib\inc;..\Libraries\SYSTEM;..\Libraries\CMSIS;..\driver;..\RTT;..\MDK;..\public\inc;..\..\CX2504-MotorBike-115200</IncludePath>
+              <IncludePath>..\Libraries\PT32Y003x_FWLib\inc;..\Libraries\SYSTEM;..\Libraries\CMSIS;..\driver;..\MDK;..\public\inc;..\..\cx2612-heat_mat;..\User</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -463,6 +463,36 @@
               <FileName>config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\config.h</FilePath>
+            </File>
+            <File>
+              <FileName>ntc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\ntc.c</FilePath>
+            </File>
+            <File>
+              <FileName>ntc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\ntc.h</FilePath>
+            </File>
+            <File>
+              <FileName>heat.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\heat.h</FilePath>
+            </File>
+            <File>
+              <FileName>heat.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\heat.c</FilePath>
+            </File>
+            <File>
+              <FileName>sif.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\sif.c</FilePath>
+            </File>
+            <File>
+              <FileName>sif.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\sif.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -3,7 +3,7 @@
   ..\Libraries\CMSIS\core_cm0.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32_Type.h \
   ..\Libraries\SYSTEM\system_PT32Y003x.h \
-  ..\..\CX2504-MotorBike-115200\PT32Y003x_conf.h \
+  ..\..\cx2612-heat_mat\PT32Y003x_conf.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_gpio.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_tim.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_nvic.h \

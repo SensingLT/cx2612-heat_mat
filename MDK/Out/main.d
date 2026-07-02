@@ -2,7 +2,7 @@
   ..\Libraries\CMSIS\core_cm0.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32_Type.h \
   ..\Libraries\SYSTEM\system_PT32Y003x.h \
-  ..\..\CX2504-MotorBike-115200\PT32Y003x_conf.h \
+  ..\..\cx2612-heat_mat\PT32Y003x_conf.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_gpio.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_tim.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_nvic.h \
@@ -19,5 +19,5 @@
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_id.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h ..\tick.h \
   ..\driver\wdg.h ..\driver\adc.h ..\driver\uart.h \
-  ..\..\CX2504-MotorBike-115200\config.h \
-  ..\..\CX2504-MotorBike-115200\tick.h ..\crc.h ..\config.h
+  ..\..\cx2612-heat_mat\config.h ..\..\cx2612-heat_mat\tick.h ..\crc.h \
+  ..\config.h ..\User\ntc.h ..\User\heat.h ..\User\sif.h
