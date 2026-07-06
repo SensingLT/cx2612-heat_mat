@@ -5,17 +5,8 @@
 #include "tick.h"
 //#include "inner_defines.h"
 
-
-/*
- * 特殊点说明：
- * 485半双工通信，PD4高电平发送，PD4低电平接收
-**/
-
-
-
 //接收时间间隔超过这个时长认为是2条消息
 #define MSG_GAP_TICKS 5
-
 
 
 static volatile uint8_t gRevBuf[UART_MAX_REV_LEN + 1];
@@ -25,7 +16,6 @@ static volatile uint32_t gOtherInts = 0;
 
 
 //uart0中断服务程序
-#if 1
 void UART0_Handler(void) {
     if (UART_GetFlagStatus(UART0, UART_FLAG_RXNE) == SET) {
         uint32_t curTick = Tick_Get();
@@ -49,16 +39,6 @@ void UART0_Handler(void) {
         gOtherInts++;
     }
 }
-#else 
-void UART0_Handler(void) {
-    while (UART_GetFlagStatus(UART0, UART_FLAG_RXNE)) {
-        printf("%c", UART_ReceiveData(UART0));
-    }
-    if (UART_GetFlagStatus(UART0, UART_FLAG_RXF)) {
-        printf("FULL");
-    }
-}
-#endif
 
 
 //返回值为正，表示成功；为0表示没有要接收的数据；如果为负，说明pBuf长度不够，取绝对值为本次所需长度
@@ -84,20 +64,10 @@ int Uart_GetRevMsg(uint8_t* pBuf, uint16_t bufSize) {
     return 0;
 }
 
-//static void switchToSendMode(bool sendMode) {
-//    if (sendMode) {
-//        GPIO_SetBits(GPIOD, GPIO_Pin_4);
-//    } else {
-//        GPIO_ResetBits(GPIOD, GPIO_Pin_4);
-//    }
-//}
-
 //9600的时候，第32个字节会被改写，容易出问题，115200的时候，比较正常
 void Uart_Init(uint32_t baud)
 {
-    //初始化接收管理控制块
-    //gLastRevTick = 0;
-    //gRevLen = 0;
+
 
     /* 配置UART管脚的复用功能 */
     GPIO_DigitalRemapConfig(AFIOD, GPIO_Pin_5, AFIO_AF_0,ENABLE); //PD5 TX0
@@ -110,10 +80,6 @@ void Uart_Init(uint32_t baud)
     nvicCfg.NVIC_IRQChannelPriority = 2; //设置中断优先级
     NVIC_Init(&nvicCfg);
     UART_ITConfig(UART0, UART_IT_RXNEI, ENABLE);
-//    UART_ITConfig(UART0, UART_IT_PEI, ENABLE);
-//    UART_ITConfig(UART0, UART_IT_FEI, ENABLE);
-//    UART_ITConfig(UART0, UART_IT_OVRI, ENABLE);
-
 
     /*初始化UART0*/
     UART_InitTypeDef uartCfg;
@@ -127,8 +93,7 @@ void Uart_Init(uint32_t baud)
 
     /*开启UART0的收发功能*/
     UART_Cmd(UART0, ENABLE);
-    
-//    switchToSendMode(false);
+  
 }
 
 void Uart_SendData(const uint8_t* pData, uint16_t length)
@@ -145,9 +110,8 @@ void Uart_SendData(const uint8_t* pData, uint16_t length)
     //等待发送队列为空（发送完成），关闭发送模式
     while(!(UART0->SR & UART_SR_TXE));
     
-    Tick_Delay(2); //mcu发送完毕，不代表485控制器发送完成，所以需要稍微等一下
+    Tick_Delay(1); //mcu发送完毕，不代表485控制器发送完成，所以需要稍微等一下
     
-    //switchToSendMode(false);
 }
 
 //这个函数不能调用太频繁，不然接收状态一直被打断从而导致接收不到数据

@@ -1,7 +1,7 @@
 Dependencies for Project 'Project', Target 'Porject': (DO NOT MODIFY !)
 CompilerVersion: 6220000::V6.22::ARMCLANG
-F (..\driver\adc.c)(0x6A445CE0)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/adc.o -MMD)
-I (..\driver\adc.h)(0x685DEAE0)
+F (..\driver\adc.c)(0x6A4B6274)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/adc.o -MMD)
+I (..\driver\adc.h)(0x6A4B4CFF)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h)(0x685DEAE0)
 I (..\Libraries\CMSIS\core_cm0.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32_Type.h)(0x685DEAE0)
@@ -25,8 +25,8 @@ I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h)(0x685DEAE0)
 I (..\..\cx2612-heat_mat\tick.h)(0x685DEAE0)
 I (..\driver\uart.h)(0x6A45C460)
 I (..\..\cx2612-heat_mat\config.h)(0x6A45C460)
-F (..\driver\adc.h)(0x685DEAE0)()
-F (..\driver\uart.c)(0x6A3CDC5D)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/uart.o -MMD)
+F (..\driver\adc.h)(0x6A4B4CFF)()
+F (..\driver\uart.c)(0x6A4B6274)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/uart.o -MMD)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h)(0x685DEAE0)
 I (..\Libraries\CMSIS\core_cm0.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32_Type.h)(0x685DEAE0)
@@ -74,7 +74,7 @@ I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_rcc.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_id.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h)(0x685DEAE0)
 F (..\driver\wdg.h)(0x685DEAE0)()
-F (..\main.c)(0x6A463551)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/main.o -MMD)
+F (..\main.c)(0x6A4B6654)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/main.o -MMD)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h)(0x685DEAE0)
 I (..\Libraries\CMSIS\core_cm0.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32_Type.h)(0x685DEAE0)
@@ -97,7 +97,7 @@ I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_id.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h)(0x685DEAE0)
 I (..\tick.h)(0x685DEAE0)
 I (..\driver\wdg.h)(0x685DEAE0)
-I (..\driver\adc.h)(0x685DEAE0)
+I (..\driver\adc.h)(0x6A4B4CFF)
 I (..\driver\uart.h)(0x6A45C460)
 I (..\..\cx2612-heat_mat\config.h)(0x6A45C460)
 I (..\..\cx2612-heat_mat\tick.h)(0x685DEAE0)
@@ -106,7 +106,8 @@ I (..\config.h)(0x6A45C460)
 I (..\User\ntc.h)(0x6A3E0BF5)
 I (..\User\heat.h)(0x6A3E0BF5)
 I (..\User\sif.h)(0x6A45CF17)
-F (..\PT32Y003x_it.c)(0x6A4634F6)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/pt32y003x_it.o -MMD)
+I (..\protocol.h)(0x6A4B5597)
+F (..\PT32Y003x_it.c)(0x6A4B6252)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/pt32y003x_it.o -MMD)
 I (..\PT32Y003x_it.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h)(0x685DEAE0)
 I (..\Libraries\CMSIS\core_cm0.h)(0x685DEAE0)
@@ -150,7 +151,7 @@ I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_pwr.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_rcc.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_id.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h)(0x685DEAE0)
-F (..\tick.c)(0x6A4608C4)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/tick.o -MMD)
+F (..\tick.c)(0x6A4B641C)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/tick.o -MMD)
 I (..\tick.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h)(0x685DEAE0)
 I (..\Libraries\CMSIS\core_cm0.h)(0x685DEAE0)
@@ -200,7 +201,7 @@ F (..\crc.h)(0x685DEAE0)()
 F (..\config.h)(0x6A45C460)()
 F (..\User\ntc.c)(0x6A439490)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/ntc.o -MMD)
 I (..\User\ntc.h)(0x6A3E0BF5)
-I (..\driver\adc.h)(0x685DEAE0)
+I (..\driver\adc.h)(0x6A4B4CFF)
 I (..\driver\uart.h)(0x6A45C460)
 I (..\..\cx2612-heat_mat\config.h)(0x6A45C460)
 I (..\..\cx2612-heat_mat\tick.h)(0x685DEAE0)
@@ -226,7 +227,7 @@ I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_id.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h)(0x685DEAE0)
 F (..\User\ntc.h)(0x6A3E0BF5)()
 F (..\User\heat.h)(0x6A3E0BF5)()
-F (..\User\heat.c)(0x6A45FF6D)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/heat.o -MMD)
+F (..\User\heat.c)(0x6A4B64D3)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/heat.o -MMD)
 I (..\User\heat.h)(0x6A3E0BF5)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h)(0x685DEAE0)
 I (..\Libraries\CMSIS\core_cm0.h)(0x685DEAE0)
@@ -251,9 +252,9 @@ I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h)(0x685DEAE0)
 I (..\driver\uart.h)(0x6A45C460)
 I (..\..\cx2612-heat_mat\config.h)(0x6A45C460)
 I (..\..\cx2612-heat_mat\tick.h)(0x685DEAE0)
-I (..\driver\adc.h)(0x685DEAE0)
+I (..\driver\adc.h)(0x6A4B4CFF)
 I (..\User\ntc.h)(0x6A3E0BF5)
-F (..\User\sif.c)(0x6A46361C)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/sif.o -MMD)
+F (..\User\sif.c)(0x6A4B6644)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/sif.o -MMD)
 I (..\User\sif.h)(0x6A45CF17)
 I (..\driver\uart.h)(0x6A45C460)
 I (..\..\cx2612-heat_mat\config.h)(0x6A45C460)
@@ -279,6 +280,35 @@ I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_rcc.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_id.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h)(0x685DEAE0)
 F (..\User\sif.h)(0x6A45CF17)()
+F (..\protocol.c)(0x6A4B5FF7)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/protocol.o -MMD)
+I (..\config.h)(0x6A45C460)
+I (..\protocol.h)(0x6A4B5597)
+I (..\driver\uart.h)(0x6A45C460)
+I (..\..\cx2612-heat_mat\config.h)(0x6A45C460)
+I (..\..\cx2612-heat_mat\tick.h)(0x685DEAE0)
+I (..\crc.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h)(0x685DEAE0)
+I (..\Libraries\CMSIS\core_cm0.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32_Type.h)(0x685DEAE0)
+I (..\Libraries\SYSTEM\system_PT32Y003x.h)(0x685DEAE0)
+I (..\..\cx2612-heat_mat\PT32Y003x_conf.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_gpio.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_tim.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_nvic.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_uart.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_pwm.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_wdg.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_i2c.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_spi.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_crc.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_immc.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_adc.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_pwr.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_rcc.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_id.h)(0x685DEAE0)
+I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h)(0x685DEAE0)
+I (..\public\inc\buildInfo.h)(0x5E0B7080)
+I (..\User\heat.h)(0x6A3E0BF5)
 F (..\Libraries\SYSTEM\startup_PT32Y003x.s)(0x685DEAE0)(--cpu Cortex-M0 -g --pd "__MICROLIB SETA 1" --diag_suppress=A1950W-I.\RTE\_Porject-ID:\keil5\ARM\pack\ARM\CMSIS\6.1.0\CMSIS\Core\Include--pd "__UVISION_VERSION SETA 540"--pd "_RTE_ SETA 1"--list .\list\startup_pt32y003x.lst--xref -o .\out\startup_pt32y003x.o--depend .\out\startup_pt32y003x.d)
 F (..\Libraries\Retarget\PT32Y003x_retarget.c)(0x685DEAE0)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/pt32y003x_retarget.o -MMD)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h)(0x685DEAE0)
@@ -448,7 +478,7 @@ I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_pwr.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_rcc.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_id.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h)(0x685DEAE0)
-F (..\Libraries\PT32Y003x_FWLib\src\PT32Y003x_pwm.c)(0x685DEAE0)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/pt32y003x_pwm.o -MMD)
+F (..\Libraries\PT32Y003x_FWLib\src\PT32Y003x_pwm.c)(0x6A4B6404)(-xc -std=c11 --target=arm-arm-none-eabi -mcpu=cortex-m0 -c-fno-rtti -flto -Werror -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../Libraries/PT32Y003x_FWLib/inc -I ../Libraries/SYSTEM -I ../Libraries/CMSIS -I ../driver -I ../MDK -I ../public/inc -I ../../cx2612-heat_mat -I ../User-I./RTE/_Porject-ID:/keil5/ARM/pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include-D__UVISION_VERSION="540" -D_RTE_ -DUSE_STDPERIPH_DRIVER -DUSE_FULL_ASSERT-o ./out/pt32y003x_pwm.o -MMD)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_pwm.h)(0x685DEAE0)
 I (..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h)(0x685DEAE0)
 I (..\Libraries\CMSIS\core_cm0.h)(0x685DEAE0)

@@ -10,6 +10,17 @@
 #include "ntc.h"
 #include "heat.h"
 #include "sif.h"
+#include "protocol.h"
+
+void Test_init(void){
+	GPIO_InitTypeDef GPIO_InitStructure; 
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OutPP; 
+    GPIO_InitStructure.GPIO_Pull = GPIO_Pull_NoPull; 
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;       
+    GPIO_Init(GPIOC, &GPIO_InitStructure); 
+	
+	GPIO_SetBits(GPIOC,GPIO_Pin_5);
+}
 
 // 复位控制代码，必须使用 
 void NRST_PBO_SetZero(void) 
@@ -24,8 +35,6 @@ void NRST_PBO_SetZero(void)
     PWR->PVDR = 0x07;                                 //LVD-2.5V复位 
 }
 
-//query_seat_req_t test;
-
 int main (void) {
 	NRST_PBO_SetZero();
 	Tick_Init();
@@ -35,17 +44,29 @@ int main (void) {
 	Heat_GPIOInit();
 	SIF_Init();
 	Heat_PIDInit(0, 2.5f, 0.10f, 0.5f);   // 通道0
-   // Heat_PIDInit(1, 5.0f, 0.10f, 0.5f);   // 通道1
-	
-   // Heat_SetTargetTemp(0, 450);
-  //  Heat_SetTargetTemp(1, 600);
-	
+    Heat_PIDInit(1, 5.0f, 0.10f, 0.5f);   // 通道1
+	DBG_LN("INIT");
 	uint8_t revMsg[UART_MAX_REV_LEN];
 	while (1) {
-		//SIF_Task();
-//		static uint32_t tempTick = 0;
-//		if(Tick_Passed(&tempTick,50)){
-//			//Heat_ControlTask();
+		SIF_Task();
+		
+//		static  uint32_t heatTick = 0;
+//		if(Tick_Passed(&heatTick,10)){
+//			Heat_ControlTask();
+//		}
+		
+//		static  uint32_t msgTick = 0;
+//		if(Tick_Passed(&msgTick,1)){
+//			int msgLen = Uart_GetRevMsg(revMsg, UART_MAX_REV_LEN);
+//			if (msgLen > 0) {
+//				//Uart_SendStr("rev: %d, %s", msgLen, revMsg);
+//				if (!Protocol_HandleMsg(revMsg, msgLen)) {
+//					if (msgLen < UART_MAX_REV_LEN) {
+//						revMsg[msgLen] = 0;
+//					}
+//					DBG_LN("unhandled msg[len = %d]: %s", msgLen, revMsg);
+//				}
+//			}
 //		}
 		Wdg_Feed();
 	}

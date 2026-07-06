@@ -7,9 +7,9 @@
 #define HEATER_CHANNEL_COUNT 2
 
 #define HEAT0_PORT AFIOC
-#define HEAT0_PIN GPIO_Pin_3
+#define HEAT0_PIN GPIO_Pin_5
 #define HEAT0_AF AFIO_AF_2
-#define HEAT0_PWM_CHANNEL PWM_Channel_3
+#define HEAT0_PWM_CHANNEL PWM_Channel_2
 
 #define HEAT1_PORT AFIOC
 #define HEAT1_PIN GPIO_Pin_4
@@ -18,7 +18,7 @@
 
 void Heat_GPIOInit(void)
 {
-	GPIO_DigitalRemapConfig(HEAT0_PORT, HEAT0_PIN, HEAT0_AF,ENABLE);//CH3
+	GPIO_DigitalRemapConfig(HEAT0_PORT, HEAT0_PIN, HEAT0_AF,ENABLE);//CH2
 	GPIO_AnalogRemapConfig(HEAT0_PORT,HEAT0_PIN,DISABLE);
 	GPIO_DigitalRemapConfig(HEAT1_PORT, HEAT1_PIN, HEAT1_AF,ENABLE);//CH4
 	GPIO_AnalogRemapConfig(HEAT1_PORT,HEAT1_PIN,DISABLE);
@@ -34,7 +34,7 @@ void Heat_GPIOInit(void)
 	PWM_TimeBaseInitType.PWM_Prescaler = 479;
 	PWM_TimeBaseInit(TIM1,&PWM_TimeBaseInitType);
 
-	OutInit.PWM_Channel =PWM_Channel_3;
+	OutInit.PWM_Channel =HEAT0_PWM_CHANNEL;
 	/* 配置为PWM输出模式 */	
 	OutInit.PWM_OCMode = TIM_OCMode_PWM1;
 	OutInit.PWM_OCNOutput = PWM_OCNOutput_Disable;		
@@ -49,23 +49,8 @@ void Heat_GPIOInit(void)
     OutInit.PWM_OCNPolarity = PWM_OCNPolarity_High;
 	PWM_OCInit(TIM1, &OutInit);
 	
-	OutInit.PWM_Channel =PWM_Channel_4;
+	OutInit.PWM_Channel =HEAT1_PWM_CHANNEL;
 	PWM_OCInit(TIM1, &OutInit);
-	/* 使能PWM */
-	PWM_Cmd(TIM1,ENABLE);
-}
-
-
-/**
-* @brief 设置PWM占空比函数
-* @param duty:定时器重装载值
-* @retval 无
-*/
-static void Heat_setPWMDuty(u16 duty)
-{
-	if(duty >= TIM1->ARR)
-		duty = (TIM1->ARR -1);
-	TIM1->OCR1 = duty;
 }
 
 
@@ -140,7 +125,7 @@ void Heat_Stop(uint8_t channel)
 
     /* 直接关闭 PWM 输出 */
     if (channel == 0)
-        TIM1->OCR3 = 0;
+        TIM1->OCR2 = 0;
     else
         TIM1->OCR4 = 0; 
 }
@@ -181,21 +166,11 @@ static void Heat_PIDProcess(uint8_t channel)
     if (output < g_pid[channel].output_min) output = g_pid[channel].output_min;
 
     /* 转换为 PWM 占空比（0 ~ ARR-1） */
-    duty = (uint16_t)(output * (1000 - 1) / 100.0f);
-//	
-//	cnt1++;
-//	if(cnt1 == 20){
-////	   DBG_LN("ch%d: error=%d, p=%d, i=%d, d=%d",
-////       channel, (int)error,
-////       (int)(p_term * 100), (int)(i_term * 100), (int)(d_term * 100));
-		//DBG_LN("ch %d : duty = %d",channel,duty);
-//	   cnt1 = 0;
-//	}
-
+    duty = (uint16_t)(output * (10000 - 1) / 100.0f);
 
     /* 设置 PWM 占空比 */
     if (channel == 0)
-        TIM1->OCR3 = duty;
+        TIM1->OCR2 = duty;
     else
         TIM1->OCR4 = duty;
 }
@@ -217,9 +192,10 @@ void Heat_ControlTask(void)
 
     for (ch = 0; ch < HEATER_CHANNEL_COUNT; ch++)
     {
-//		DBG_LN("current temp %d = %d , target temp %d = %d",ch,g_heat_status[ch].current_temp,ch,g_heat_status[ch].target_temp);
+	
         if (g_heat_status[ch].target_temp > 0)
         {
+			DBG_LN("current t%d = %d , target t%d = %d",ch,g_heat_status[ch].current_temp,ch,g_heat_status[ch].target_temp);
             Heat_PIDProcess(ch);
         }
     }

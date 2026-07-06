@@ -7,6 +7,6 @@
 void Adc_Init(void);
 
 //返回最后更新的Tick值
-uint32_t Adc_Get(uint16_t *ad1, uint16_t *ad2);
+void Adc_Get(uint16_t *ad1, uint16_t *ad2);
 
 #endif //__ADC_H__

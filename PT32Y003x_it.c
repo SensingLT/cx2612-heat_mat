@@ -147,23 +147,23 @@ WEEK void ADC_Handler(void)
 {
 }
 
-///**
-//* @brief TIMER1中断服务函数
-//* @param None
-//* @retval None
-//*/
-//WEEK void TIM1_Handler(void)
-//{	
-//}
+/**
+* @brief TIMER1中断服务函数
+* @param None
+* @retval None
+*/
+WEEK void TIM1_Handler(void)
+{	
+}
 
-///**
-//* @brief TIMER2中断服务函数
-//* @param None
-//* @retval None
-//*/
-//WEEK void TIM2_Handler(void)
-//{	
-//}
+/**
+* @brief TIMER2中断服务函数
+* @param None
+* @retval None
+*/
+WEEK void TIM2_Handler(void)
+{	
+}
 
 /**
 * @brief TIMER3中断服务函数

@@ -10,6 +10,7 @@
 ".\out\ntc.o"
 ".\out\heat.o"
 ".\out\sif.o"
+".\out\protocol.o"
 ".\out\startup_pt32y003x.o"
 ".\out\pt32y003x_retarget.o"
 ".\out\pt32y003x_adc.o"

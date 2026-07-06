@@ -1,4 +1,5 @@
-./out/main.o: ..\main.c ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h \
+./out/exti.o: ..\User\exti.c ..\User\exti.h \
+  ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x.h \
   ..\Libraries\CMSIS\core_cm0.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32_Type.h \
   ..\Libraries\SYSTEM\system_PT32Y003x.h \
@@ -17,7 +18,5 @@
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_pwr.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_rcc.h \
   ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_id.h \
-  ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h ..\tick.h \
-  ..\driver\wdg.h ..\driver\adc.h ..\driver\uart.h \
-  ..\..\cx2612-heat_mat\config.h ..\..\cx2612-heat_mat\tick.h ..\crc.h \
-  ..\config.h ..\User\ntc.h ..\User\heat.h ..\User\sif.h ..\protocol.h
+  ..\Libraries\PT32Y003x_FWLib\inc\PT32Y003x_exti.h ..\driver\uart.h \
+  ..\..\cx2612-heat_mat\config.h ..\..\cx2612-heat_mat\tick.h
