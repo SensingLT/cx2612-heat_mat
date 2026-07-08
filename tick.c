@@ -38,14 +38,14 @@ void Tick_Init(void) {
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseInitStruct;//定义一个NVIC_InitTypeDef类型的结构体
 
     TIM_TimeBaseInitStruct.TIM_Prescaler = 4800-1; //48M/4800=0.01MHZ
-    TIM_TimeBaseInitStruct.TIM_AutoReload = 100; //   1/（0.01MHZ）*100=10ms
+    TIM_TimeBaseInitStruct.TIM_AutoReload = 100; //   1/（0.01MHZ）*100 = 10ms
     TIM_TimeBaseInitStruct.TIM_Direction = TIM_Direction_Up; //向上计数
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStruct); //初始化TIM2
 
     TIM_ITConfig(TIM2,TIM_IT_ARI,ENABLE); //定时中断初始化
 
     NVIC_InitStruct.NVIC_IRQChannel = TIM2_IRQn; //定时中断源设置
-    NVIC_InitStruct.NVIC_IRQChannelPriority = 0x00; //中断优先级设置
+    NVIC_InitStruct.NVIC_IRQChannelPriority = 0x02; //中断优先级设置
     NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE; //使能NVIC控制器
     NVIC_Init(&NVIC_InitStruct); //初始化NVIC
 

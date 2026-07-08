@@ -7,9 +7,9 @@
 #define HEATER_CHANNEL_COUNT 2
 
 #define HEAT0_PORT AFIOC
-#define HEAT0_PIN GPIO_Pin_3
+#define HEAT0_PIN GPIO_Pin_5
 #define HEAT0_AF AFIO_AF_2
-#define HEAT0_PWM_CHANNEL PWM_Channel_3
+#define HEAT0_PWM_CHANNEL PWM_Channel_2
 
 #define HEAT1_PORT AFIOC
 #define HEAT1_PIN GPIO_Pin_4
@@ -18,7 +18,7 @@
 
 void Heat_GPIOInit(void)
 {
-	GPIO_DigitalRemapConfig(HEAT0_PORT, HEAT0_PIN, HEAT0_AF,ENABLE);//CH3
+	GPIO_DigitalRemapConfig(HEAT0_PORT, HEAT0_PIN, HEAT0_AF,ENABLE);//CH2
 	GPIO_AnalogRemapConfig(HEAT0_PORT,HEAT0_PIN,DISABLE);
 	GPIO_DigitalRemapConfig(HEAT1_PORT, HEAT1_PIN, HEAT1_AF,ENABLE);//CH4
 	GPIO_AnalogRemapConfig(HEAT1_PORT,HEAT1_PIN,DISABLE);
@@ -34,7 +34,7 @@ void Heat_GPIOInit(void)
 	PWM_TimeBaseInitType.PWM_Prescaler = 479;
 	PWM_TimeBaseInit(TIM1,&PWM_TimeBaseInitType);
 
-	OutInit.PWM_Channel =PWM_Channel_3;
+	OutInit.PWM_Channel =HEAT0_PWM_CHANNEL;
 	/* 配置为PWM输出模式 */	
 	OutInit.PWM_OCMode = TIM_OCMode_PWM1;
 	OutInit.PWM_OCNOutput = PWM_OCNOutput_Disable;		
@@ -49,23 +49,8 @@ void Heat_GPIOInit(void)
     OutInit.PWM_OCNPolarity = PWM_OCNPolarity_High;
 	PWM_OCInit(TIM1, &OutInit);
 	
-	OutInit.PWM_Channel =PWM_Channel_4;
+	OutInit.PWM_Channel =HEAT1_PWM_CHANNEL;
 	PWM_OCInit(TIM1, &OutInit);
-	/* 使能PWM */
-	PWM_Cmd(TIM1,ENABLE);
-}
-
-
-/**
-* @brief 设置PWM占空比函数
-* @param duty:定时器重装载值
-* @retval 无
-*/
-static void Heat_setPWMDuty(u16 duty)
-{
-	if(duty >= TIM1->ARR)
-		duty = (TIM1->ARR -1);
-	TIM1->OCR1 = duty;
 }
 
 
@@ -78,23 +63,23 @@ typedef struct {
     float prev_error;   // 上一次误差
     float output_max;   // 输出上限（对应最大占空比 100）
     float output_min;   // 输出下限（通常 0）
+	float integral_max; 
+	float integral_min; 
+    float err_filter;   // 误差低通滤波，抑制ADC抖动
 } pid_t;
 
 /* 两个通道的 PID */
 static pid_t g_pid[HEATER_CHANNEL_COUNT];
 
 typedef struct {
-	int16_t current_temp; // 当前温度
-	int16_t target_temp;  //目标温度
+	int16_t current_temp; // 当前温度 ×0.1℃
+	int16_t target_temp;  //目标温度 ×0.1℃
 } heat_t;
 
 static heat_t g_heat_status[HEATER_CHANNEL_COUNT] = {0};
+
 /**
  * @brief  初始化 PID 参数
- * @param  channel  通道号（0 或 1）
- * @param  kp       比例系数
- * @param  ki       积分系数
- * @param  kd       微分系数
  */
 void Heat_PIDInit(uint8_t channel, float kp, float ki, float kd)
 {
@@ -105,30 +90,29 @@ void Heat_PIDInit(uint8_t channel, float kp, float ki, float kd)
     g_pid[channel].kd = kd;
     g_pid[channel].integral = 0.0f;
     g_pid[channel].prev_error = 0.0f;
-    g_pid[channel].output_max = 100.0f;   // 占空比最大 100%
+    g_pid[channel].output_max = 100.0f;
     g_pid[channel].output_min = 0.0f;
+    // 放大积分限幅，防止轻易饱和
+    g_pid[channel].integral_max = 200.0f;
+    g_pid[channel].integral_min = -200.0f;
+    g_pid[channel].err_filter = 0.0f;
 }
 
 /**
  * @brief  设置目标温度（×10）
- * @param  channel     通道号
- * @param  temp_x10    目标温度 ×10，例如 250 表示 25.0°C
  */
 void Heat_SetTargetTemp(uint8_t channel, int16_t temp_x10)
 {
     if (channel >= HEATER_CHANNEL_COUNT) return;
 
     g_heat_status[channel].target_temp = temp_x10;
-
-    /* 重置 PID 积分，防止突变 */
     g_pid[channel].integral = 0.0f;
     g_pid[channel].prev_error = 0.0f;
+    g_pid[channel].err_filter = 0.0f;
 }
-
 
 /**
  * @brief  停止加热
- * @param  channel     通道号
  */
 void Heat_Stop(uint8_t channel)
 {
@@ -137,70 +121,88 @@ void Heat_Stop(uint8_t channel)
     g_heat_status[channel].target_temp = 0;
     g_pid[channel].integral = 0.0f;
     g_pid[channel].prev_error = 0.0f;
+    g_pid[channel].err_filter = 0.0f;
 
-    /* 直接关闭 PWM 输出 */
     if (channel == 0)
-        TIM1->OCR3 = 0;
+        TIM1->OCR2 = 0;
     else
         TIM1->OCR4 = 0; 
 }
 
-static uint8_t cnt1 = 0;
 /**
- * @brief  执行一次 PID 计算，更新 PWM 占空比
- * @param  channel  通道号
+ * @brief  执行一次 PID 计算，带抗积分饱和、分段缓降输出
  */
 static void Heat_PIDProcess(uint8_t channel)
 {
     float error, p_term, i_term, d_term, output;
     uint16_t duty;
+    pid_t *pid = &g_pid[channel];
+    heat_t *heat = &g_heat_status[channel];
 
-    if (channel >= HEATER_CHANNEL_COUNT) return;
+    // 1. 原始温差：目标 - 当前
+    float raw_err = (float)(heat->target_temp - heat->current_temp);
+    // 一阶低通滤波消除ADC/NTC抖动
+    pid->err_filter = pid->err_filter * 0.7f + raw_err * 0.3f;
+    error = pid->err_filter;
 
-    /* 计算误差（目标 - 当前） */
-    error = (float)(g_heat_status[channel].target_temp - g_heat_status[channel].current_temp);
+    // ========== 温度超目标直接切断加热 ==========
+    if (error <= 0.0f)
+    {
+        // 当前温度 >= 目标，停止加热，积分清零防滞后
+        output = 0.0f;
+        pid->integral = 0.0f;
+        pid->prev_error = 0.0f;
+    }
+    else
+    {
+        float abs_err = fabsf(error);
+        // 温差绝对值 < 5 (0.5℃)：低功率保温
+        if (abs_err < 5.0f)
+        {
+            output = 5.0f;
+        }
+        // 温差 5 ~ 20 (0.5~2.0℃) 线性降功率
+        else if (abs_err < 20.0f)
+        {
+            float scale = abs_err / 20.0f;
+            output = 100.0f * scale;
+        }
+        // 温差>2℃：全速PID加热
+        else
+        {
+            p_term = pid->kp * error;
+            // 抗积分饱和：输出未顶满才累加积分
+            float temp_out = p_term;
+            if(temp_out < pid->output_max && temp_out > pid->output_min)
+            {
+                pid->integral += error;
+            }
+            // 积分限幅
+            if (pid->integral > pid->integral_max)
+                pid->integral = pid->integral_max;
+            if (pid->integral < pid->integral_min)
+                pid->integral = pid->integral_min;
 
-    /* 比例项 */
-    p_term = g_pid[channel].kp * error;
+            i_term = pid->ki * pid->integral;
+            d_term = pid->kd * (error - pid->prev_error);
+            pid->prev_error = error;
 
-    /* 积分项（防积分饱和） */
-    g_pid[channel].integral += error;
-    if (g_pid[channel].integral > 1000.0f)  g_pid[channel].integral = 1000.0f;
-    if (g_pid[channel].integral < -1000.0f) g_pid[channel].integral = -1000.0f;
-    i_term = g_pid[channel].ki * g_pid[channel].integral;
+            output = p_term + i_term + d_term;
+        }
+    }
 
-    /* 微分项 */
-    d_term = g_pid[channel].kd * (error - g_pid[channel].prev_error);
-    g_pid[channel].prev_error = error;
+    // 全局输出限幅 0~100%
+    if (output > pid->output_max) output = pid->output_max;
+    if (output < pid->output_min) output = pid->output_min;
 
-    /* 总输出 */
-    output = p_term + i_term + d_term;
-
-    /* 输出限幅 */
-    if (output > g_pid[channel].output_max) output = g_pid[channel].output_max;
-    if (output < g_pid[channel].output_min) output = g_pid[channel].output_min;
-
-    /* 转换为 PWM 占空比（0 ~ ARR-1） */
-    duty = (uint16_t)(output * (1000 - 1) / 100.0f);
-//	
-//	cnt1++;
-//	if(cnt1 == 20){
-////	   DBG_LN("ch%d: error=%d, p=%d, i=%d, d=%d",
-////       channel, (int)error,
-////       (int)(p_term * 100), (int)(i_term * 100), (int)(d_term * 100));
-		//DBG_LN("ch %d : duty = %d",channel,duty);
-//	   cnt1 = 0;
-//	}
-
-
-    /* 设置 PWM 占空比 */
+    // PWM占空比换算 ARR=10000
+    duty = (uint16_t)(output * 10000 / 100.0f);
     if (channel == 0)
-        TIM1->OCR3 = duty;
+        TIM1->OCR2 = duty;
     else
         TIM1->OCR4 = duty;
 }
 
-//static uint8_t cnt2 = 0;
 /**
  * @brief  温控主处理函数
  */
@@ -209,17 +211,14 @@ void Heat_ControlTask(void)
     uint8_t ch;
 	uint16_t adc0,adc1 = 0;
 	Adc_Get(&adc0,&adc1);
-	//DBG_LN("adc0 =  %d,adc1 = %d",adc0,adc1);
-    /* 读取当前温度（×10） */
 	g_heat_status[0].current_temp = NTC_AdcToTemp(adc0);
 	g_heat_status[1].current_temp = NTC_AdcToTemp(adc1);
-	//DBG_LN("current temp %d = %d , target temp %d = %d",ch,g_heat_status[ch].current_temp,ch,g_heat_status[ch].target_temp);
 
     for (ch = 0; ch < HEATER_CHANNEL_COUNT; ch++)
     {
-//		DBG_LN("current temp %d = %d , target temp %d = %d",ch,g_heat_status[ch].current_temp,ch,g_heat_status[ch].target_temp);
         if (g_heat_status[ch].target_temp > 0)
         {
+			DBG_LN("current t%d = %d , target t%d = %d",ch,g_heat_status[ch].current_temp,ch,g_heat_status[ch].target_temp);
             Heat_PIDProcess(ch);
         }
     }
