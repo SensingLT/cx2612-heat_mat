@@ -28,7 +28,10 @@ void SIF_Init(void){
     icInit.PWM_ICResetCounter = PWM_ICResetCounter_Enable;
     PWM_ICInit(TIM1, &icInit);
 	
+
 	TIM1->CR2 = PWM_CAPR_IC1I;
+	PWM_ITConfig(TIM1, PWM_CAPR_IC1I, ENABLE);
+
 	
 	NVIC_InitTypeDef nvicCfg;
     nvicCfg.NVIC_IRQChannel = TIM1_IRQn;
@@ -53,6 +56,7 @@ static volatile uint8_t cap_tail = 0;
 // ===================== ÖÐ¶Ï½âÎö =====================
 void TIM1_Handler(void)
 {
+	//DBG_LN("TIM1 INTREUPT");
     uint16_t curr_cap;
     uint8_t edge_type = 0;
 	
@@ -77,7 +81,6 @@ void TIM1_Handler(void)
         cap_head = next_head;
     }
 }
-
 
 #define SHORT_MAX      300    // ¶ÌÂö³å£º¡Ü200
 #define LONG_MIN       350    // ³¤Âö³å£º¡Ý400
@@ -125,7 +128,8 @@ uint8_t SIF_ParseFrame(uint8_t *out_buf, uint8_t *out_len)
 
         switch(state)
         {
-			DBG_LN("STATE : %d",state);
+	//		DBG_LN("STATE : %d",state);
+			//DBG_LN("state");
             // ===================== 1. Æ¥ÅäÆðÊ¼ÐÅºÅ =====================
             case WAIT_START:
                 if(edge == 1 && pulse_width >= START_LOW_MIN) {

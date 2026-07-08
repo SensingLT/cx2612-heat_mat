@@ -72,8 +72,8 @@ void ADC_Handler(void) {
         gAdcCtrl.adc1 = ADC_GetScanData(ADC, NTC0_ADC_SCAN_CHANNEL) >> 3;
         gAdcCtrl.adc2 = ADC_GetScanData(ADC, NTC1_ADC_SCAN_CHANNEL) >> 3;
       //  gAdcCtrl.update_tick = Tick_Get();
-       // DBG_LN(" adc1: %d, adc2: %d", gAdcCtrl.adc1, gAdcCtrl.adc2);
-        //endStrLn(">: %d K -  %d mV, %d K - %d mV", 100 * adc1 / (4096-adc1), 5080 *adc1/4096, 100 * adc2 / (4096-adc2), 5080 *adc2/4096);
+       // DBG_LN("tick: %d, adc1: %d, adc2: %d", gAdcCtrl.update_tick, gAdcCtrl.adc1, gAdcCtrl.adc2);
+        //Uart_SendStrLn(">: %d K -  %d mV, %d K - %d mV", 100 * adc1 / (4096-adc1), 5080 *adc1/4096, 100 * adc2 / (4096-adc2), 5080 *adc2/4096);
     }
 } 
 

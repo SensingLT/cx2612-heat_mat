@@ -191,9 +191,9 @@ static void Heat_PIDProcess(uint8_t channel)
         }
     }
 
-    // 全局输出限幅 0~100%
-    if (output > pid->output_max) output = pid->output_max;
-    if (output < pid->output_min) output = pid->output_min;
+    /* 输出限幅 */
+    if (output > g_pid[channel].output_max) output = g_pid[channel].output_max;
+    if (output < g_pid[channel].output_min) output = g_pid[channel].output_min;
 
     // PWM占空比换算 ARR=10000
     duty = (uint16_t)(output * 10000 / 100.0f);

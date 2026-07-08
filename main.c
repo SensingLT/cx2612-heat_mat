@@ -42,6 +42,7 @@ int main (void) {
 	Adc_Init();
 	Heat_GPIOInit();
 	SIF_Init();
+<<<<<<< .merge_file_u4I6Np
 	Heat_PIDInit(0, 2.2f, 0.06f, 1.0f);   // 通道0
 	Heat_PIDInit(1, 2.2f, 0.06f, 1.0f);
 	DBG_LN("INIT");
@@ -68,6 +69,33 @@ int main (void) {
 				}
 			}
 		}
+=======
+	Heat_PIDInit(0, 2.5f, 0.10f, 0.5f);   // 通道0
+    Heat_PIDInit(1, 5.0f, 0.10f, 0.5f);   // 通道1
+	DBG_LN("INIT");
+	uint8_t revMsg[UART_MAX_REV_LEN];
+	while (1) {
+		SIF_Task();
+		
+//		static  uint32_t heatTick = 0;
+//		if(Tick_Passed(&heatTick,10)){
+//			Heat_ControlTask();
+//		}
+		
+//		static  uint32_t msgTick = 0;
+//		if(Tick_Passed(&msgTick,1)){
+//			int msgLen = Uart_GetRevMsg(revMsg, UART_MAX_REV_LEN);
+//			if (msgLen > 0) {
+//				//Uart_SendStr("rev: %d, %s", msgLen, revMsg);
+//				if (!Protocol_HandleMsg(revMsg, msgLen)) {
+//					if (msgLen < UART_MAX_REV_LEN) {
+//						revMsg[msgLen] = 0;
+//					}
+//					DBG_LN("unhandled msg[len = %d]: %s", msgLen, revMsg);
+//				}
+//			}
+//		}
+>>>>>>> .merge_file_qZ5mSh
 		Wdg_Feed();
 	}
 }
