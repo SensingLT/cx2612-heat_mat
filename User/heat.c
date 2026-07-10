@@ -129,9 +129,6 @@ void Heat_Stop(uint8_t channel)
         TIM1->OCR4 = 0; 
 }
 
-/**
- * @brief  执行一次 PID 计算，带抗积分饱和、分段缓降输出
- */
 static void Heat_PIDProcess(uint8_t channel)
 {
     float error, p_term, i_term, d_term, output;
@@ -139,68 +136,75 @@ static void Heat_PIDProcess(uint8_t channel)
     pid_t *pid = &g_pid[channel];
     heat_t *heat = &g_heat_status[channel];
 
-    // 1. 原始温差：目标 - 当前
+    // 原始温差：目标 - 当前
     float raw_err = (float)(heat->target_temp - heat->current_temp);
-    // 一阶低通滤波消除ADC/NTC抖动
+    // 一阶低通滤波
     pid->err_filter = pid->err_filter * 0.7f + raw_err * 0.3f;
     error = pid->err_filter;
 
-    // ========== 温度超目标直接切断加热 ==========
-    if (error <= 0.0f)
+    // ==================== 过温保护 ====================
+    // 当前温度超过目标+1.5℃（15×0.1℃）立即关闭
+    if (heat->current_temp > heat->target_temp + 15)
     {
-        // 当前温度 >= 目标，停止加热，积分清零防滞后
         output = 0.0f;
         pid->integral = 0.0f;
         pid->prev_error = 0.0f;
     }
+	
+	else if(error <= 0){
+		output = 5.0f;
+	}
+    // ==================== 正常控温 ====================
     else
-    {
-        float abs_err = fabsf(error);
-        // 温差绝对值 < 5 (0.5℃)：低功率保温
-        if (abs_err < 5.0f)
-        {
-            output = 5.0f;
-        }
-        // 温差 5 ~ 20 (0.5~2.0℃) 线性降功率
-        else if (abs_err < 20.0f)
-        {
-            float scale = abs_err / 20.0f;
-            output = 100.0f * scale;
-        }
-        // 温差>2℃：全速PID加热
-        else
-        {
-            p_term = pid->kp * error;
-            // 抗积分饱和：输出未顶满才累加积分
-            float temp_out = p_term;
-            if(temp_out < pid->output_max && temp_out > pid->output_min)
-            {
-                pid->integral += error;
-            }
-            // 积分限幅
-            if (pid->integral > pid->integral_max)
-                pid->integral = pid->integral_max;
-            if (pid->integral < pid->integral_min)
-                pid->integral = pid->integral_min;
+    { 
+        if (error < 20.0f)
+		{
+			float scale = error / 30.0f;
+			output = 100.0f * scale;
+		}
+		// 温差 > 5.0℃：全速PID
+		else
+		{
+			p_term = pid->kp * error;
+			float temp_i = pid->ki * pid->integral;
+			float temp_d = pid->kd * (error - pid->prev_error);
+			float temp_total = p_term + temp_i + temp_d;
 
-            i_term = pid->ki * pid->integral;
-            d_term = pid->kd * (error - pid->prev_error);
-            pid->prev_error = error;
+			if (temp_total < pid->output_max && temp_total > pid->output_min)
+			{
+				pid->integral += error;
+			}
+			// 积分限幅
+			if (pid->integral > pid->integral_max)
+				pid->integral = pid->integral_max;
+			if (pid->integral < pid->integral_min)
+				pid->integral = pid->integral_min;
 
-            output = p_term + i_term + d_term;
-        }
+			i_term = pid->ki * pid->integral;
+			d_term = pid->kd * (error - pid->prev_error);
+			pid->prev_error = error;
+
+			output = p_term + i_term + d_term;
+		}
     }
 
-    /* 输出限幅 */
-    if (output > g_pid[channel].output_max) output = g_pid[channel].output_max;
-    if (output < g_pid[channel].output_min) output = g_pid[channel].output_min;
+    // 输出限幅
+    if (output > pid->output_max) output = pid->output_max;
+    if (output < pid->output_min) output = pid->output_min;
 
-    // PWM占空比换算 ARR=10000
+    // PWM占空比换算
     duty = (uint16_t)(output * 10000 / 100.0f);
     if (channel == 0)
         TIM1->OCR2 = duty;
     else
         TIM1->OCR4 = duty;
+}
+
+static uint8_t heating_flag = 0; //加热标志位
+
+uint8_t Heat_IsHeating(void)
+{
+    return heating_flag;
 }
 
 /**
@@ -210,7 +214,7 @@ void Heat_ControlTask(void)
 {
     uint8_t ch;
 	uint16_t adc0,adc1 = 0;
-	Adc_Get(&adc0,&adc1);
+	Adc_NtcGet(&adc0,&adc1);
 	g_heat_status[0].current_temp = NTC_AdcToTemp(adc0);
 	g_heat_status[1].current_temp = NTC_AdcToTemp(adc1);
 
@@ -222,4 +226,5 @@ void Heat_ControlTask(void)
             Heat_PIDProcess(ch);
         }
     }
+	heating_flag = (TIM1->OCR2 > 0) || (TIM1->OCR4 > 0) ? 1 : 0;
 }

@@ -5,19 +5,28 @@
 
 #define AD_TO_RES(ad) (10 * (ad) / (4096 - ad))
 
+//PA1-ADC_IN1
 #define NTC0_PORT AFIOA
 #define NTC0_PIN GPIO_Pin_1
 #define NTC0_ADC_CHANNEL ADC_Channel_1
 #define NTC0_ADC_SCAN_CHANNEL ADC_ScanChannel_0
 
+//PA2-ADC_IN0
 #define NTC1_PORT AFIOA
 #define NTC1_PIN GPIO_Pin_2
 #define NTC1_ADC_CHANNEL ADC_Channel_0
 #define NTC1_ADC_SCAN_CHANNEL ADC_ScanChannel_1
 
+//PC3-ADC_IN10
+#define CS_PORT AFIOC
+#define CS_PIN  GPIO_Pin_3
+#define CS_ADC_CHANNEL ADC_Channel_10
+#define CS_ADC_SCAN_CHANNEL ADC_ScanChannel_2
+
 typedef struct {
-    uint16_t adc1;
-    uint16_t adc2; 
+    uint16_t adc1_ntc0;
+    uint16_t adc2_ntc1; 
+	uint16_t adc3_csVol;
    // uint32_t update_tick;
 } adc_ctrl_t;
 
@@ -28,7 +37,8 @@ void Adc_Init(void)
     //config gpio
     GPIO_AnalogRemapConfig(NTC0_PORT, NTC0_PIN, ENABLE); //模拟复用功能PA1复用为ADC1通道
     GPIO_AnalogRemapConfig(NTC1_PORT, NTC1_PIN, ENABLE); //模拟复用功能PA2复用为ADC0通道
-    
+    GPIO_AnalogRemapConfig(CS_PORT, CS_PIN, ENABLE);     //模拟复用功能PC3复用为ADC10通道
+	
     //config mode
     ADC_InitTypeDef adcCfg;
     ADC_StructInit(&adcCfg);
@@ -50,7 +60,8 @@ void Adc_Init(void)
     //order
     ADC_ScanChannelConfig(ADC, NTC0_ADC_CHANNEL, 0);
     ADC_ScanChannelConfig(ADC, NTC1_ADC_CHANNEL, 1);
-    ADC_ScanChannelNumberConfig(ADC, 2);
+	ADC_ScanChannelConfig(ADC, CS_ADC_CHANNEL, 2);
+    ADC_ScanChannelNumberConfig(ADC, 3);
     ADC_ScanCmd(ADC, ENABLE);
     
     NVIC_InitTypeDef nvicCfg;
@@ -69,19 +80,23 @@ void Adc_Init(void)
 //中断处理函数
 void ADC_Handler(void) {
     if (ADC_GetFlagStatus(ADC, ADC_FLAG_EOS)) {
-        gAdcCtrl.adc1 = ADC_GetScanData(ADC, NTC0_ADC_SCAN_CHANNEL) >> 3;
-        gAdcCtrl.adc2 = ADC_GetScanData(ADC, NTC1_ADC_SCAN_CHANNEL) >> 3;
+        gAdcCtrl.adc1_ntc0 = ADC_GetScanData(ADC, NTC0_ADC_SCAN_CHANNEL) >> 3;
+        gAdcCtrl.adc2_ntc1 = ADC_GetScanData(ADC, NTC1_ADC_SCAN_CHANNEL) >> 3;
       //  gAdcCtrl.update_tick = Tick_Get();
        // DBG_LN("tick: %d, adc1: %d, adc2: %d", gAdcCtrl.update_tick, gAdcCtrl.adc1, gAdcCtrl.adc2);
         //Uart_SendStrLn(">: %d K -  %d mV, %d K - %d mV", 100 * adc1 / (4096-adc1), 5080 *adc1/4096, 100 * adc2 / (4096-adc2), 5080 *adc2/4096);
     }
 } 
 
-void Adc_Get(uint16_t *ad1, uint16_t *ad2) {
-    *ad1 = gAdcCtrl.adc1;
-    *ad2 = gAdcCtrl.adc2;
-	uint16_t r1 = AD_TO_RES(gAdcCtrl.adc1);
-	uint16_t r2 = AD_TO_RES(gAdcCtrl.adc2);
+void Adc_NtcGet(uint16_t *ad1, uint16_t *ad2) {
+    *ad1 = gAdcCtrl.adc1_ntc0;
+    *ad2 = gAdcCtrl.adc2_ntc1;
+//	uint16_t r1 = AD_TO_RES(gAdcCtrl.adc1);
+//	uint16_t r2 = AD_TO_RES(gAdcCtrl.adc2);
 	//DBG_LN("r1 = %d,r2 = %d",r1,r2);
    // return gAdcCtrl.update_tick;
+}
+
+void Adc_csVoltageGet(uint16_t *ad) {
+    *ad = gAdcCtrl.adc3_csVol;
 }

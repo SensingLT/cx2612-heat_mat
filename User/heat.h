@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define HEAT_CHANNEL_0 0
+#define HEAT_CHANNEL_1 1
+
 void Heat_GPIOInit(void);
 void Heat_PIDInit(uint8_t channel, float kp, float ki, float kd);
 void Heat_SetTargetTemp(uint8_t channel, int16_t temp_x10);

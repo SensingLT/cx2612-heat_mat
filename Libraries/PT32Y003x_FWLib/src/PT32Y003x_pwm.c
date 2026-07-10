@@ -519,7 +519,7 @@ void PWM_ITConfig(PWM_TypeDef* PWMx, u32 PWM_IT, FunctionalState NewState)
 	assert_param(IS_FUNCTIONAL_STATE(NewState));
 	if((PWM_IT == PWM_IT_ARI) | (PWM_IT == PWM_IT_OC1I) | (PWM_IT == PWM_IT_OC2I) | (PWM_IT == PWM_IT_OC3I) | (PWM_IT == PWM_IT_OC4I) | (PWM_IT == PWM_IT_UI))
 	{
-        if(PWM_IT == PWM_IT_IC1I)
+        if(PWM_IT == PWM_IT_OC1I)
         {
             if (NewState != DISABLE)
             {

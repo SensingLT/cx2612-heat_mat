@@ -29,9 +29,7 @@ void SIF_Init(void){
     PWM_ICInit(TIM1, &icInit);
 	
 
-	TIM1->CR2 = PWM_CAPR_IC1I;
-	PWM_ITConfig(TIM1, PWM_CAPR_IC1I, ENABLE);
-
+	PWM_ITConfig(TIM1,PWM_IT_IC1I,ENABLE);
 	
 	NVIC_InitTypeDef nvicCfg;
     nvicCfg.NVIC_IRQChannel = TIM1_IRQn;
@@ -56,14 +54,13 @@ static volatile uint8_t cap_tail = 0;
 // ===================== 中断解析 =====================
 void TIM1_Handler(void)
 {
-	//DBG_LN("TIM1 INTREUPT");
     uint16_t curr_cap;
     uint8_t edge_type = 0;
 	
 	uint32_t flags;
 	
 	flags = TIM1->SR;
-    TIM1->SR = flags;                     /* 清除所有标志位 (写1清除) */
+    TIM1->SR = flags; /* 清除所有标志位 (写1清除) */
 	
     if(flags & PWM_FLAG_IC1R) {
         edge_type = 1;   // 上升沿
@@ -73,7 +70,7 @@ void TIM1_Handler(void)
     } 
 
     curr_cap  = (uint16_t)TIM1->ICR1;
-	//DBG_LN("%d",curr_cap);
+	//DBG_LN("%d , %d\r\n",curr_cap,edge_type);
     uint8_t next_head = (cap_head + 1) % CAP_BUF_SIZE;
     if(next_head != cap_tail) {   
         cap_buf[cap_head].timestamp = curr_cap;
@@ -82,10 +79,10 @@ void TIM1_Handler(void)
     }
 }
 
-#define SHORT_MAX      300    // 短脉冲：≤200
-#define LONG_MIN       350    // 长脉冲：≥400
+#define SHORT_MAX      300    // 短脉冲：≤300
+#define LONG_MIN       350    // 长脉冲：≥350
 
-#define START_LOW_MIN  6000   // 起始低电平 ≥6000
+#define START_LOW_MIN  4000   // 起始低电平 ≥4000
 #define START_HIGH_MIN 150    // 起始高电平 150~250
 #define START_HIGH_MAX 250
 
@@ -108,10 +105,11 @@ uint8_t SIF_ParseFrame(uint8_t *out_buf, uint8_t *out_len)
 
     // 状态机
     enum {
-        WAIT_START,    // 等待起始信号
+        WAIT_START_LOW,    // 等待起始上升沿
+		WAIT_START_HIGH,// 等待起始下降沿
         RECV_BITS,     // 接收32位数据
         WAIT_STOP      // 等待结束信号
-    } state = WAIT_START;
+    } state = WAIT_START_LOW;
 
     uint8_t idx = tail;
     uint16_t pulse_width;
@@ -128,17 +126,23 @@ uint8_t SIF_ParseFrame(uint8_t *out_buf, uint8_t *out_len)
 
         switch(state)
         {
-	//		DBG_LN("STATE : %d",state);
-			//DBG_LN("state");
             // ===================== 1. 匹配起始信号 =====================
-            case WAIT_START:
+            case WAIT_START_LOW:
                 if(edge == 1 && pulse_width >= START_LOW_MIN) {
+                    // 收到起始长低电平，等待起始高电平
+                    state = WAIT_START_HIGH;
+                }
+				//printf("WAIT_START_HIGH\r\n");
+                break;
+            case WAIT_START_HIGH:
+                if(edge == 0 && pulse_width >= START_HIGH_MIN && pulse_width <= START_HIGH_MAX) {
                     // 收到起始长低电平，等待起始高电平
                     state = RECV_BITS;
                     bit_cnt = 0;
                     byte_cnt = 0;
                     data_buf[0] = data_buf[1] = data_buf[2] = data_buf[3] = 0;
                 }
+				//printf("RECV_BITS\r\n");
                 break;
 
             // ===================== 2. 接收数据位 =====================
@@ -150,6 +154,7 @@ uint8_t SIF_ParseFrame(uint8_t *out_buf, uint8_t *out_len)
                     {
                         if(byte_cnt == 4) {
                             state = WAIT_STOP;
+							printf("STOP\r\n");
                             goto parse_done;
                         }
                         break;
@@ -165,10 +170,11 @@ uint8_t SIF_ParseFrame(uint8_t *out_buf, uint8_t *out_len)
                     }
                     else {
                         // 无效位，复位
-                        state = WAIT_START;
+                        state = WAIT_START_LOW;
+						printf("RESET\r\n");
                         break;
                     }
-                   data_buf[byte_cnt] = (data_buf[byte_cnt] << 1) | bit;
+                  data_buf[byte_cnt] = (data_buf[byte_cnt] >> 1) | (bit << 7);
 
                     bit_cnt++;
 
@@ -185,6 +191,7 @@ uint8_t SIF_ParseFrame(uint8_t *out_buf, uint8_t *out_len)
                 break;
 
             case WAIT_STOP:
+				printf("STOP\r\n");
                 goto parse_done;
         }
     }
@@ -212,8 +219,29 @@ void SIF_Task(void)
 {
     uint8_t data[4];
     uint8_t len;
-    if(SIF_ParseFrame(data, &len))
-    {
-        DBG_LN("[SIF] : %02X %02X %02X %02X", data[0], data[1], data[2], data[3]);
-    }
+
+     //原来的解析与打印（可保留或注释）
+     if(SIF_ParseFrame(data, &len))
+     {
+         DBG_LN("[SIF] : %02X %02X %02X %02X", data[0], data[1], data[2], data[3]);
+     }
+
+//    // ---- 新增：打印 cap_buf 全部未消费事件 ----
+//    __disable_irq();                     // 关中断保护
+//    uint8_t tail = cap_tail;
+//    uint8_t head = cap_head;
+//    __enable_irq();
+
+//    if (tail != head) {
+//        DBG_LN("=== CapBuf Events (%d pending) ===", 
+//               (head >= tail) ? (head - tail) : (CAP_BUF_SIZE - tail + head));
+//        uint8_t idx = tail;
+//        while (idx != head) {
+//            DBG_LN("  [%u] ts=%u edge=%s", 
+//                   idx,
+//                   cap_buf[idx].timestamp,
+//                   cap_buf[idx].edge ? "RISE" : "FALL");
+//            idx = (idx + 1) % CAP_BUF_SIZE;
+//        }
+//    }
 }

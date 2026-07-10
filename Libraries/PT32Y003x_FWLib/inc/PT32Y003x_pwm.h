@@ -343,7 +343,7 @@ typedef struct
 #define PWM_IT_OC2I                  PWM_CR2_OC2I      
 #define PWM_IT_OC3I                  PWM_CR2_OC3I    
 #define PWM_IT_OC4I                  PWM_CR2_OC4I      
-#define PWM_IT_IC1I                  (PWM_CAPR_IC1I|0x80000)  
+#define PWM_IT_IC1I                  (PWM_CAPR_IC1I)  
 #define PWM_IT_IC2I                  PWM_CAPR_IC2I     
 #define PWM_IT_IC3I                  PWM_CAPR_IC3I   
 #define PWM_IT_IC4I                  PWM_CAPR_IC4I     

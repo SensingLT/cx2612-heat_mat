@@ -22,3 +22,4 @@ MDK/Out/pt32y003x_pwm.o
 MDK/Out/sif.o
 MDK/Out/tick.o
 MDK/Out/uart.o
+MDK/JLinkLog.txt
