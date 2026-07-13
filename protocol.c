@@ -6,6 +6,7 @@
 #include "buildInfo.h"
 #include "heat.h"
 
+
 //获取命令参数，从1号开始
 static int parseIntPara(const uint8_t* pMsg, uint16_t length, int paraId) {
 	if (paraId < 1) {

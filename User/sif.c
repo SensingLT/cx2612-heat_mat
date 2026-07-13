@@ -154,7 +154,7 @@ uint8_t SIF_ParseFrame(uint8_t *out_buf, uint8_t *out_len)
                     {
                         if(byte_cnt == 4) {
                             state = WAIT_STOP;
-							printf("STOP\r\n");
+						//	printf("STOP\r\n");
                             goto parse_done;
                         }
                         break;
@@ -171,7 +171,7 @@ uint8_t SIF_ParseFrame(uint8_t *out_buf, uint8_t *out_len)
                     else {
                         // 无效位，复位
                         state = WAIT_START_LOW;
-						printf("RESET\r\n");
+					//	printf("RESET\r\n");
                         break;
                     }
                   data_buf[byte_cnt] = (data_buf[byte_cnt] >> 1) | (bit << 7);
@@ -191,7 +191,7 @@ uint8_t SIF_ParseFrame(uint8_t *out_buf, uint8_t *out_len)
                 break;
 
             case WAIT_STOP:
-				printf("STOP\r\n");
+				//printf("STOP\r\n");
                 goto parse_done;
         }
     }

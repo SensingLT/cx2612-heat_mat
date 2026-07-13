@@ -1,6 +1,8 @@
 #include "protection.h"
 #include "PT32Y003x.h"
 #include "heat.h"
+#include "adc.h"
+#include "uart.h"
 /*
  这部分主要用来检测加热芯片的状态，当处在异常状态下，进行调节和安全保护
 */
@@ -45,3 +47,9 @@ void Protection_swCurrentCH(uint8_t ch){
 	}
 	
 }
+
+//void Protection_Task(void){
+//	uint16_t adc = 0;
+//	Adc_csVoltageGet(&adc);
+//	DBG_LN("voltage  ad : %d ",adc);
+//}

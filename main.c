@@ -11,6 +11,7 @@
 #include "heat.h"
 #include "sif.h"
 #include "protocol.h"
+#include "protection.h"
 
 // 复位控制代码，必须使用 
 void NRST_PBO_SetZero(void) 
@@ -32,6 +33,7 @@ int main (void) {
 	Adc_Init();
 	Heat_GPIOInit();
 	SIF_Init();
+	Protection_init();
 	Heat_PIDInit(HEAT_CHANNEL_0, 1.5f, 0.06f, 1.0f);   // 通道0
 	Heat_PIDInit(HEAT_CHANNEL_1, 1.5f, 0.06f, 1.0f);
 	DBG_LN("INIT");
@@ -41,8 +43,9 @@ int main (void) {
 		SIF_Task();
 		
 		static  uint32_t heatTick = 0;
-		if(Tick_Passed(&heatTick,5)){
+		if(Tick_Passed(&heatTick,20)){
 			Heat_ControlTask();
+			//Protection_Task();
 		}
 		
 		static  uint32_t msgTick = 0;

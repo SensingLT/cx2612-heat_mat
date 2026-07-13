@@ -27,7 +27,7 @@ typedef struct {
     uint16_t adc1_ntc0;
     uint16_t adc2_ntc1; 
 	uint16_t adc3_csVol;
-   // uint32_t update_tick;
+    uint32_t update_tick;
 } adc_ctrl_t;
 
 adc_ctrl_t gAdcCtrl;
@@ -82,21 +82,28 @@ void ADC_Handler(void) {
     if (ADC_GetFlagStatus(ADC, ADC_FLAG_EOS)) {
         gAdcCtrl.adc1_ntc0 = ADC_GetScanData(ADC, NTC0_ADC_SCAN_CHANNEL) >> 3;
         gAdcCtrl.adc2_ntc1 = ADC_GetScanData(ADC, NTC1_ADC_SCAN_CHANNEL) >> 3;
-      //  gAdcCtrl.update_tick = Tick_Get();
-       // DBG_LN("tick: %d, adc1: %d, adc2: %d", gAdcCtrl.update_tick, gAdcCtrl.adc1, gAdcCtrl.adc2);
-        //Uart_SendStrLn(">: %d K -  %d mV, %d K - %d mV", 100 * adc1 / (4096-adc1), 5080 *adc1/4096, 100 * adc2 / (4096-adc2), 5080 *adc2/4096);
+		gAdcCtrl.adc3_csVol = ADC_GetScanData(ADC, CS_ADC_SCAN_CHANNEL) >> 3;
+        gAdcCtrl.update_tick = Tick_Get();
+       // DBG_LN("tick: %d, adc1: %d, adc2: %d", gAdcCtrl.update_tick, gAdcCtrl.adc1_ntc0, gAdcCtrl.adc2_ntc1);
     }
 } 
 
-void Adc_NtcGet(uint16_t *ad1, uint16_t *ad2) {
+uint32_t Adc_NtcGet(uint16_t *ad1, uint16_t *ad2) {
     *ad1 = gAdcCtrl.adc1_ntc0;
     *ad2 = gAdcCtrl.adc2_ntc1;
 //	uint16_t r1 = AD_TO_RES(gAdcCtrl.adc1);
 //	uint16_t r2 = AD_TO_RES(gAdcCtrl.adc2);
-	//DBG_LN("r1 = %d,r2 = %d",r1,r2);
-   // return gAdcCtrl.update_tick;
+	//DBG_LN("ad1 = %d,ad2 = %d",gAdcCtrl.adc1_ntc0,gAdcCtrl.adc2_ntc1);
+    return gAdcCtrl.update_tick;
 }
 
-void Adc_csVoltageGet(uint16_t *ad) {
-    *ad = gAdcCtrl.adc3_csVol;
+uint32_t Adc_csCurrentGet(uint32_t *current) {
+    // 电压：mV
+    uint32_t voltage_mV = (uint32_t)gAdcCtrl.adc3_csVol * 5000 / 4095;
+    // 电流：mA，系数 3.7 = 37/10
+    uint32_t current_mA = voltage_mV * 37 / 10; 
+
+    *current = current_mA;
+
+    return gAdcCtrl.update_tick;
 }
