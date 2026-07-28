@@ -87,7 +87,8 @@ typedef struct {
     uint32_t last_change_tick;  
     uint8_t  ntc_fault;         
     uint8_t  current_fault;     
-    uint8_t  current_fail_cnt;  // 新增：连续异常计数
+    uint8_t  current_fail_cnt;
+	uint8_t  temp_fault;//过温异常
 } fault_t;
 static fault_t g_fault[HEATER_CHANNEL_COUNT] = {0};
 
@@ -112,7 +113,7 @@ void Heat_PIDInit(uint8_t channel, float kp, float ki, float kd)
 }
 
 /**
- * @brief  设置目标温度（×10）
+ * @brief  设置目标温度
  */
 void Heat_SetTargetTemp(uint8_t channel, int16_t temp_x10)
 {
@@ -129,6 +130,7 @@ void Heat_SetTargetTemp(uint8_t channel, int16_t temp_x10)
     g_fault[channel].ntc_fault = 0;
     g_fault[channel].current_fault = 0;
     g_fault[channel].current_fail_cnt = 0;
+    g_fault[channel].temp_fault = 0;
     g_fault[channel].last_adc = 0;
     g_fault[channel].last_change_tick = 0;
 }
@@ -158,63 +160,61 @@ static void Heat_PIDProcess(uint8_t channel)
     pid_t *pid = &g_pid[channel];
     heat_t *heat = &g_heat_status[channel];
 
-    // 原始温差：目标 - 当前
-    float raw_err = (float)(heat->target_temp - heat->current_temp);
-    // 一阶低通滤波
-    pid->err_filter = pid->err_filter * 0.7f + raw_err * 0.3f;
-    error = pid->err_filter;
-
-    // ==================== 过温保护 ====================
-    // 当前温度超过目标+1.5℃（15×0.1℃）立即关闭
+    // 过温保护（使用原始当前温度判断）
     if (heat->current_temp > heat->target_temp + 15)
     {
         output = 0.0f;
         pid->integral = 0.0f;
         pid->prev_error = 0.0f;
-    }
-	
-	else if(error <= 0){
-		output = 5.0f;
-	}
-    // ==================== 正常控温 ====================
-    else
-    { 
-        if (error < 20.0f)
-		{
-			float scale = error / 30.0f;
-			output = 100.0f * scale;
-		}
-		// 温差 > 5.0℃：全速PID
-		else
-		{
-			p_term = pid->kp * error;
-			float temp_i = pid->ki * pid->integral;
-			float temp_d = pid->kd * (error - pid->prev_error);
-			float temp_total = p_term + temp_i + temp_d;
-
-			if (temp_total < pid->output_max && temp_total > pid->output_min)
-			{
-				pid->integral += error;
-			}
-			// 积分限幅
-			if (pid->integral > pid->integral_max)
-				pid->integral = pid->integral_max;
-			if (pid->integral < pid->integral_min)
-				pid->integral = pid->integral_min;
-
-			i_term = pid->ki * pid->integral;
-			d_term = pid->kd * (error - pid->prev_error);
-			pid->prev_error = error;
-
-			output = p_term + i_term + d_term;
-		}
+        goto set_output;
     }
 
-    // 输出限幅
+    // 通道1补偿温度5度
+    int16_t pid_current_temp = heat->current_temp;
+    if (channel == 1 && heat->current_temp >= 400) // 40.0℃
+    {
+        pid_current_temp += 50; // 加5.0℃
+    }
+
+    // 原始温差：目标 - 补偿后的当前温度
+    float raw_err = (float)(heat->target_temp - pid_current_temp);
+    // 一阶低通滤波
+    pid->err_filter = pid->err_filter * 0.7f + raw_err * 0.3f;
+    error = pid->err_filter;
+
+    if (error <= 0) {
+        output = 5.0f;
+    }
+    else if (error < 20.0f) {
+        float scale = error / 30.0f;
+        output = 100.0f * scale;
+    }
+    else {
+        p_term = pid->kp * error;
+        float temp_i = pid->ki * pid->integral;
+        float temp_d = pid->kd * (error - pid->prev_error);
+        float temp_total = p_term + temp_i + temp_d;
+
+        if (temp_total < pid->output_max && temp_total > pid->output_min)
+        {
+            pid->integral += error;
+        }
+        if (pid->integral > pid->integral_max)
+            pid->integral = pid->integral_max;
+        if (pid->integral < pid->integral_min)
+            pid->integral = pid->integral_min;
+
+        i_term = pid->ki * pid->integral;
+        d_term = pid->kd * (error - pid->prev_error);
+        pid->prev_error = error;
+
+        output = p_term + i_term + d_term;
+    }
+
+set_output:
     if (output > pid->output_max) output = pid->output_max;
     if (output < pid->output_min) output = pid->output_min;
 
-    // PWM占空比换算
     duty = (uint16_t)(output * 10000 / 100.0f);
     if (channel == 0)
         TIM1->OCR2 = duty;
@@ -265,25 +265,15 @@ void Heat_ControlTask(void) {
             f->ntc_fault = 0;
         }
 
-        // --- 电流检测（连续10次异常才切断）---
-        if (h->target_temp > 0 && !f->current_fault) {
-            Protection_swCurrentCH(ch);
-            Tick_Delay(1);  
-            Adc_csCurrentGet(&curr_ma);
-			DBG_LN("ch %d current :  %d ma",ch,curr_ma);
-            if (curr_ma < CURRENT_OPEN_THRESHOLD_MA || curr_ma > CURRENT_SHORT_THRESHOLD_MA) {
-                if (++f->current_fail_cnt >= 10) {
-                    f->current_fault = 1;
-                    Heater_SetPwm(ch, 0);
-                    continue;
-                }
-            } else {
-                f->current_fail_cnt = 0;
-            }
+        // ==================== 过温保护 ====================
+        if (!f->ntc_fault && h->current_temp >= 650) {
+            f->temp_fault = 1;
+            h->target_temp = 0;
+            Heater_SetPwm(ch, 0);
         }
 
         // --- PID 控制 ---
-        if (h->target_temp > 0 && !f->ntc_fault && !f->current_fault) {
+        if (h->target_temp > 0 && !f->ntc_fault && !f->current_fault && !f->temp_fault) {
 			DBG_LN("current t%d = %d , target t%d = %d", ch, h->current_temp, ch, h->target_temp);
             Heat_PIDProcess(ch);
         } else {
