@@ -45,7 +45,7 @@ bool Protocol_HandleMsg(const uint8_t* pMsg, uint16_t length) {
 				Heat_Stop(0);
 				return true;
 			}
-			//Uart_SendStrForCmd("T0 set to %d\n", t1_value);
+			DBG_LN("T0 set to %d\n", t1_value);
 			Heat_SetTargetTemp(0,t1_value * 10);
 			return true;
 		}

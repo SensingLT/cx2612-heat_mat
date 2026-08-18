@@ -34,8 +34,8 @@ int main (void) {
 	Heat_GPIOInit();
 	SIF_Init();
 	Protection_init();
-	Heat_PIDInit(HEAT_CHANNEL_0, 1.5f, 0.06f, 1.0f);   // 通道0
-	Heat_PIDInit(HEAT_CHANNEL_1, 1.5f, 0.06f, 1.0f);
+	Heat_PIDInit(HEAT_CHANNEL_0, 2.5f, 0.06f, 1.0f);   // 通道0
+	Heat_PIDInit(HEAT_CHANNEL_1, 2.5f, 0.06f, 1.0f);
 	DBG_LN("INIT");
 	Wdg_Init(WDG_COUNTER_PER_SECOND); //timeout=1s 设置看门狗重装载值
 	uint8_t revMsg[UART_MAX_REV_LEN];
@@ -45,7 +45,12 @@ int main (void) {
 		static  uint32_t heatTick = 0;
 		if(Tick_Passed(&heatTick,20)){
 			Heat_ControlTask();
-			//Protection_Task();
+		}
+		
+		static  uint32_t phTick = 0;
+		if(Tick_Passed(&phTick,200)){
+			uint16_t r1,r2=0;
+			Adc_phGet(&r1,&r2);
 		}
 		
 		static  uint32_t msgTick = 0;

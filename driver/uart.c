@@ -8,6 +8,14 @@
 //接收时间间隔超过这个时长认为是2条消息
 #define MSG_GAP_TICKS 5
 
+/*
+ * 特殊点说明：
+ * 485半双工通信，PD4高电平发送，PD4低电平接收
+**/
+
+#define TO_SEND_MODE() GPIO_SetBits(GPIOD, GPIO_Pin_4)
+#define TO_REV_MODE() GPIO_ResetBits(GPIOD, GPIO_Pin_4)
+
 
 static volatile uint8_t gRevBuf[UART_MAX_REV_LEN + 1];
 static volatile uint16_t gRevLen = 0;
@@ -67,11 +75,17 @@ int Uart_GetRevMsg(uint8_t* pBuf, uint16_t bufSize) {
 //9600的时候，第32个字节会被改写，容易出问题，115200的时候，比较正常
 void Uart_Init(uint32_t baud)
 {
-
-
     /* 配置UART管脚的复用功能 */
     GPIO_DigitalRemapConfig(AFIOD, GPIO_Pin_5, AFIO_AF_0,ENABLE); //PD5 TX0
     GPIO_DigitalRemapConfig(AFIOD, GPIO_Pin_6, AFIO_AF_0,ENABLE); //PD6 RX0
+	
+    //配置485收发控制引脚，PD4高电平发送，PD4低电平接收
+    GPIO_InitTypeDef gpioCfg;
+    GPIO_StructInit(&gpioCfg);
+    gpioCfg.GPIO_Pin = GPIO_Pin_4;
+    gpioCfg.GPIO_Mode = GPIO_Mode_OutPP;
+    gpioCfg.GPIO_Pull = GPIO_Pull_NoPull;
+    GPIO_Init(GPIOD, &gpioCfg);
 
     /*NVIC配置*/
     NVIC_InitTypeDef nvicCfg;
@@ -98,7 +112,7 @@ void Uart_Init(uint32_t baud)
 
 void Uart_SendData(const uint8_t* pData, uint16_t length)
 {
- //   switchToSendMode(true);
+    TO_SEND_MODE();
 
     for (int i = 0; i < length; i++) {
         //UART_SendData(UART0, pData[i]);
@@ -109,6 +123,8 @@ void Uart_SendData(const uint8_t* pData, uint16_t length)
     }
     //等待发送队列为空（发送完成），关闭发送模式
     while(!(UART0->SR & UART_SR_TXE));
+	
+	TO_REV_MODE();
     
     Tick_Delay(1); //mcu发送完毕，不代表485控制器发送完成，所以需要稍微等一下
     

@@ -6,11 +6,11 @@
 /*
  这部分主要用来检测加热芯片的状态，当处在异常状态下，进行调节和安全保护
 */
-#define SEL0_PORT GPIOA
-#define SEL0_PIN  GPIO_Pin_3
+#define SEL0_PORT GPIOB
+#define SEL0_PIN  GPIO_Pin_5
 
-#define SEN_PORT GPIOB
-#define SEN_PIN  GPIO_Pin_4
+#define SEN_PORT GPIOC
+#define SEN_PIN  GPIO_Pin_6
 
 
 typedef struct{
@@ -47,9 +47,3 @@ void Protection_swCurrentCH(uint8_t ch){
 	}
 	
 }
-
-//void Protection_Task(void){
-//	uint16_t adc = 0;
-//	Adc_csVoltageGet(&adc);
-//	DBG_LN("voltage  ad : %d ",adc);
-//}

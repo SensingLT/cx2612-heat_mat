@@ -2,10 +2,10 @@
 #include "uart.h"
 #include "PT32Y003x.h"
 
-#define SIF_PORT AFIOC
-#define SIF_PIN GPIO_Pin_6
-#define SIF_AF AFIO_AF_2
-#define SIF_PWM_CHANNEL PWM_Channel_1
+#define SIF_PORT AFIOD
+#define SIF_PIN GPIO_Pin_3
+#define SIF_AF AFIO_AF_1
+#define SIF_PWM_CHANNEL PWM_Channel_4
 
 // ===================== 初始化：双边沿捕获 =====================
 void SIF_Init(void){
@@ -22,14 +22,14 @@ void SIF_Init(void){
 	
     PWM_ICInitTypeDef icInit;
     icInit.PWM_Channel        = SIF_PWM_CHANNEL;
-    icInit.PWM_ICSource       = PWM_ICSource_ICS1;
+    icInit.PWM_ICSource       = PWM_ICSource_ICS4;
     icInit.PWM_ICRiseCapture  = PWM_ICRiseCapture_Enable;
     icInit.PWM_ICFallCapture  = PWM_ICFallCapture_Enable;
     icInit.PWM_ICResetCounter = PWM_ICResetCounter_Enable;
     PWM_ICInit(TIM1, &icInit);
 	
 
-	PWM_ITConfig(TIM1,PWM_IT_IC1I,ENABLE);
+	PWM_ITConfig(TIM1,PWM_IT_IC4I,ENABLE);
 	
 	NVIC_InitTypeDef nvicCfg;
     nvicCfg.NVIC_IRQChannel = TIM1_IRQn;
@@ -62,10 +62,10 @@ void TIM1_Handler(void)
 	flags = TIM1->SR;
     TIM1->SR = flags; /* 清除所有标志位 (写1清除) */
 	
-    if(flags & PWM_FLAG_IC1R) {
+    if(flags & PWM_FLAG_IC4R) {
         edge_type = 1;   // 上升沿
     } 
-	else if(flags & PWM_FLAG_IC1F) {
+	else if(flags & PWM_FLAG_IC4F) {
         edge_type = 0;   // 下降沿
     } 
 
